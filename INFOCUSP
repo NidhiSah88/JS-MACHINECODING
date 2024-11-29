@@ -1,0 +1,115 @@
+const promise = new Promise((resolve, reject) => {
+  console.log(1);
+  setTimeout(() => {
+    console.log("timerStart");
+    resolve("success");
+    console.log("timerEnd");
+  }, 0);
+  console.log(2);
+});
+
+promise.then((res) => {
+  console.log(res);
+});
+
+console.log(4);
+
+o/p:
+
+1
+2
+4
+"timerStart"
+"timerEnd"
+"success"
+
+Q2:
+function throwsErrorRandomly() {
+  if (Math.random() > 0.1) {
+
+    throw new Error('Bad Luck!');
+  }
+  return 'Good Luck!';
+}
+
+async function retry(fn, maxNumberOfRetries, delayBetweenRetry) {
+  /*
+        Args:
+            fn: Function that needs to be retried
+            maxNumberOfRetries: Maximum number of retries that can be made
+            delayBetweenRetry: Amount of time in ms to wait before retrying
+        Returns:
+            If the fn invocation succeeds, it resolves with the same return value
+            If fn keeps throwing errors, even after maxNumberOfRetries, it rejects with the same error
+  */
+
+  let p = new Promise((resolve, reject) => {
+    let limit: number = 0;
+
+    const att = () => {
+      limit++;
+
+      try{
+        let res = fn();
+        console.log(res);
+      if (res == "Good Luck!") {
+        resolve(res);
+
+      } else {
+        reject(true);
+      }
+
+      } catch(err){
+        if(limit < maxNumberOfRetries ){
+          setTimeout(limit, delayBetweenRetry);
+        }
+      }
+      
+p();
+
+    }
+  })
+
+}
+
+// Usage
+retry(throwsErrorRandomly, 3, 500)
+  .then(console.log)
+  .catch(error => console.error('All attempts failed:', error.message));
+
+/*
+function helloWorld() {
+  setTimeout(() => {
+    return 'Hello World';
+  }, 0);
+}
+
+console.log(helloWorld());
+*/
+
+
+Q3:
+AVOID RERENDERING OF CHILD COMPONENT:
+import React, { useState } from "react";
+
+const ChildComponent = ({ onClick }) => {
+  console.log("Child re-rendered");
+  return <button onClick={onClick}>Click Me</button>;
+};
+
+const Rerender = () => {
+  const [count, setCount] = useState(0);
+
+  const handleClick = () => {
+    setCount(count + 1);
+  };
+
+  return (
+    <div>
+      <ChildComponent onClick={handleClick} />{" "}
+      {/* This will trigger unnecessary re-renders */}
+      <p>Count: {count}</p>
+    </div>
+  );
+};
+export default Rerender;
