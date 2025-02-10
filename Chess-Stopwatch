@@ -1,0 +1,160 @@
+Enboarder Assignment
+Use CodeSandbox to submit the solutions – codesandbox.io
+You can share the solution link.
+TASK 1:
+Create a stopwatch by only using hooks. It should contain three buttons -
+
+ One to start
+ One to pause
+ One to reset
+
+TASK 2:
+Create an optimized (rendering) version of the chess board of a grid by only using hooks. It
+should accept an input the grid size e.g 8 would mean a Chess board of grid 8x8.
+
+# ChesssBoard.tsx
+import React, { useState, useEffect } from "react";
+import "./styles.css";
+import axios from "axios";
+
+export default function ChessBoardGame() {
+  const [useChastBoard, setChastBoard] = useState([]);
+
+  useEffect(() => {
+    let chastBoard: any = [];
+
+    let counter = 0;
+    for (let i = 0; i < 8; i++) {
+      let row = [];
+      for (let k = 0; k < 8; k++) {
+        row.push(counter);
+        counter++;
+      }
+      chastBoard.push(row);
+      counter++;
+    }
+    // console.log(chastBoard);
+    setChastBoard(chastBoard);
+  }, []);
+
+  return (
+    <div className="App">
+      <h1>CHESS BOARD</h1>
+
+      <div className="board">
+        {useChastBoard.map((row) => {
+          return (
+            <div className="rows">
+              {row.map((box) => {
+                return (
+                  <div
+                    className="box"
+                    // key={`box-${box}`}
+                    style={{ background: box % 2 === 0 ? "black" : "white" }}
+                  >
+                    {/* {box} */}
+                  </div>
+                );
+              })}
+            </div>
+          );
+        })}
+      </div>
+    </div>
+  );
+}
+
+
+or 
+
+
+import React, { useMemo } from "react";
+import "./styles.css";
+
+export default function ChessBoardGame({ size = 8 }) {
+  const chessBoard = useMemo(() => {
+    return Array.from({ length: size }, (_, row) =>
+      Array.from({ length: size }, (_, col) => (row + col) % 2 === 0)
+    );
+  }, [size]);
+
+  return (
+    <div className="App">
+      <h1>CHESS BOARD</h1>
+      <div className="board">
+        {chessBoard.map((row, rowIndex) => (
+          <div key={rowIndex} className="rows">
+            {row.map((isBlack, colIndex) => (
+              <div
+                key={`${rowIndex}-${colIndex}`}
+                className="box"
+                style={{ background: isBlack ? "black" : "white" }}
+              />
+            ))}
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+
+
+#Stopwatch.tsx
+import "./styles.css";
+import React, { useEffect, useState } from "react";
+
+export default function StopWatch() {
+  const [time, setTime] = useState(0);
+  const [isRunning, setIsRunning] = useState(false);
+
+  useEffect(() => {
+    let timer: any;
+    if (isRunning) {
+      timer = setInterval(() => {
+        setTime((prevTime) => prevTime + 1);
+      }, 1000);
+    } else {
+      clearInterval(timer);
+    }
+    return () => clearInterval(timer);
+  }, [isRunning]);
+
+  return (
+    <div className="App">
+      <div>
+        <h1>STOPWATCH</h1>
+        <h1 className="text-2xl font-bold">{time} sec</h1>
+        <div className=" pl-2">
+          <button onClick={() => setIsRunning(true)}>Start</button>
+          <button onClick={() => setIsRunning(false)}>Pause</button>
+          <button
+            onClick={() => {
+              setIsRunning(false);
+              setTime(0);
+            }}
+          >
+            Reset
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+
+#App.tsx
+import "./styles.css";
+import React, { useEffect, useState } from "react";
+import StopWatch from "./StopWatch";
+import ChessBoardGame from "./ChessBoardGame";
+
+export default function App() {
+  return (
+    <div className="App">
+      <StopWatch />
+
+      <ChessBoardGame />
+    </div>
+  );
+}
