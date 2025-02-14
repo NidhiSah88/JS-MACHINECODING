@@ -19,6 +19,40 @@ Constraints:
 0 <= arr[i] <= 103
 0 <= target <= 109
 
+
+# SOLUTION BY GEEKS FOR GEEKS
+// Function to find a continuous sub-array which adds up to
+// a given number.
+function subarraySum(arr, target) {
+    let res = [];
+    let n = arr.length;
+
+    // Pick a starting point for a subarray
+    for (let s = 0; s < n; s++) {
+        let curr = 0;
+
+        // Consider all ending points
+        // for the picked starting point
+        for (let e = s; e < n; e++) {
+            curr += arr[e];
+            if (curr === target) {
+                res.push(s + 1);
+                res.push(e + 1);
+                return res;
+            }
+        }
+    }
+    // If no subarray is found
+    return [-1];
+}
+
+// Driver Code
+let arr = [15, 2, 4, 8, 9, 5, 10, 23];
+let target = 23;
+let res = subarraySum(arr, target);
+
+console.log(res.join(' '));
+
 #SOLUTION: METHOD1
 // User function Template for javascript
 /**
