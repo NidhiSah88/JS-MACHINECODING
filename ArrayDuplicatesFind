@@ -1,0 +1,102 @@
+Array Duplicates
+Difficulty: EasyAccuracy: 18.95%Submissions: 810K+Points: 2Average Time: 20m
+Given an array arr of integers, find all the elements that occur more than once in the array. If no element repeats, return an empty array.
+
+Examples:
+
+Input: arr[] = [2, 3, 1, 2, 3]
+Output: [2, 3] 
+Explanation: 2 and 3 occur more than once in the given array.
+Input: arr[] = [0, 3, 1, 2] 
+Output: [] 
+Explanation: There is no repeating element in the array, so the output is empty.
+Input: arr[] = [2]
+Output: [] 
+Explanation: There is single element in the array. Therefore output is empty.
+Constraints:
+1 <= arr.size() <= 106
+0 <= arr[i] <= 106
+
+my solt:
+class Solution {
+    findDuplicates(arr) {
+        
+        
+        let seen = new Set();
+        let duplicates = new Set(); // To avoid duplicate entries in result
+        
+        for (let num of arr) {
+            if (seen.has(num)) {
+                duplicates.add(num);
+            } else {
+                seen.add(num);
+            }
+        }
+        
+        return [...duplicates].sort((a, b) => a - b); 
+        
+        
+    }
+}
+
+
+Intuition:
+The approach of this solution revolves around utilizing the properties of the given array to determine duplicate elements efficiently. By modifying the elements of the array itself, we can mark duplicates without using extra space. The key idea is to leverage the range of elements in the array to indicate the occurrence of elements more than once.
+
+Implementation:
+1. Iterate through the array and update elements: Initially, iterate through the input array. For each element, increment the value at the index equal to the element modulo the array size by the array size.
+
+2. Identify elements occurring more than once: After updating all elements, loop through the array again. Check if the value at index `i` divided by the array size is greater than 1. If it is, the element `i` occurs more than once, hence add it to the output vector.
+
+3. Handle cases when no duplicates are found: If no duplicates are detected during the iteration, append `-1` to the output vector.
+
+4. Return the final output: Return the vector containing duplicate elements or return an empty vector if no duplicates were found.
+
+
+class Solution {
+    // Function to find duplicates in the given array
+    findDuplicates(arr) {
+        const mp = new Map(); // Create a hashmap to count occurrences of each element
+
+        // Count each element's occurrence in the array
+        for (const k of arr) {
+            mp.set(k, (mp.get(k) || 0) + 1);
+        }
+
+        const ans = []; // To store the result
+
+        // Traverse the hashmap and check for elements occurring more than once
+        for (const [key, value] of mp) {
+            if (value > 1) {
+                ans.push(key); // Add the element to the result
+            }
+        }
+
+        return ans; // Return the list of duplicates or an empty array if none found
+    }
+}
+
+
+Complexity:Time Complexity: The time complexity of this approach is O(n), where n is the size of the input array. Both iterations over the array contribute linearly to the overall time complexity.
+
+Space Complexity: The space complexity is O(n), as the additional vector storing duplicate elements can grow up to the size of the input array. The algorithm does not use any extra space proportional to the input array size outside of the returned vector, meeting the expected auxiliary space requirement.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
