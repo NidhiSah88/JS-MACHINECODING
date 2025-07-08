@@ -1,0 +1,63 @@
+// Online Javascript Editor for free
+// Write, Edit and Run your Javascript code using JS Online Compiler
+
+console.log("Try programiz.pro");
+
+console.log("HI RES:", );
+
+let arr = [7,4,-7,0];
+
+ function findTrip(arr){
+     console.log("findTrip called")
+	let sums = {};
+ 
+ 	for(let i = 0; i<=arr.length; i++){
+
+		for(let j = i ; j<=arr.length; j++){
+
+			for(let k = j ; k <= arr.length; k++){
+
+    //  console.log("findTrip called1 ")
+				if(arr[i]+ arr[j]+ arr[k] === 0 ){
+				    
+     console.log("findTrip called2 ")
+					const nosum = [arr[i], arr[j], arr[k]].sort();
+					sums[`{sotn}`] = nosum;
+				} else{
+				    console.log("none")
+				}
+
+			}
+
+		}
+
+	}
+
+ return Object.values(sums);
+}
+// const threeSum = (nums) => {
+//   const threeSums = {};
+//   for (let i = 0; i <= nums.length; i++) {
+//     for (let j = i; j <= nums.length; j++) {
+//       for (let k = j; k <= nums.length; k++) {
+//         if (nums[i] + nums[j] + nums[k] === 0) {
+//           const sortedNums = [nums[i], nums[j], nums[k]].sort();
+//           threeSums[`${sortedNums}`] = sortedNums;
+//         }
+//       }
+//     }
+//   }
+//   return Object.values(threeSums);
+// };
+
+let res =  findTrip(arr);
+console.log("RES:", res);
+
+QUESTION,  HOW  DO YOU IMPLEMENT SECURTY IN CURRENT PROJECT,
+
+WHAT CHALLENGES YOU FACED IN PROJECT IN JS AND HOW DO YOU HANDLE IT
+INTRODUCTION, 
+ROUTER IN NEXTJS, REACTJS,
+
+
+
