@@ -1,0 +1,64 @@
+convosight- frontend
+
+us based company 
+render user and filter by gender and name
+if there are millions of users then how will you render in ui and how will you optimize performance
+if you search name in input search box how will you optimize it --debounce 
+import "./styles.css";
+import React, { useState } from "react";
+
+export default function App() {
+  const [selectedName, setSelectedName] = useState("");
+  const [selectedGender, setSelectedGender] = useState("");
+
+  const users = [
+    { id: 1, name: "Alice", gender: "female" },
+    { id: 2, name: "Bob", gender: "male" },
+    { id: 3, name: "Clara", gender: "female" },
+    { id: 4, name: "David", gender: "male" },
+  ];
+
+  const filteredUser = users.filter((ele) => {
+    const filteredName = ele.name
+      .toLowerCase()
+      .includes(selectedName.toLowerCase());
+
+    const matchGender = ele.gender === selectedGender;
+    console.log("filter user call:: ", filteredName);
+
+    return filteredName && matchGender;
+  });
+
+  return (
+    <div className="App">
+      <h1>Hello CodeSandbox</h1>
+      <h2>Start editing to see some magic happen!</h2>
+
+      <input
+        type="text"
+        placeholder="search name"
+        value={selectedName}
+        onChange={(e) => setSelectedName(e.target.value)}
+      />
+
+      <select
+        value={selectedGender}
+        onChange={(e) => setSelectedGender(e.target.value)}
+      >
+        <option value="male"> Male </option>
+        <option value="female"> Female </option>
+      </select>
+
+      <ul>
+        <p> hiii:: </p>
+        {filteredUser.map((item) => (
+          <li key={item.id}>
+            Name: {item.name}
+            Gnder: {item.gender}
+          </li>
+        ))}
+      </ul>
+    </div>
+  );
+}
+
