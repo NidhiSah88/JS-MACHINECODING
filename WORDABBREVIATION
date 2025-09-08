@@ -1,0 +1,149 @@
+A string can be abbreviated by replacing any number of non-adjacent, non-empty substrings with their lengths. The lengths should not have leading zeros.
+
+For example, a string such as "substitution" could be abbreviated as (but not limited to):
+
+10
+
+"s10n" ("s ubstitution")
+
+11
+
+"sub4u4" ("sub stit u tion")
+
+12
+
+"12" ("substitution")
+
+13
+
+"su3i1u2on" ("su bstituti on")
+
+14
+
+"substitution" (no substrings replaced)
+
+15
+
+1
+
+The following are not valid abbreviations:
+
+Sliding Window
+
+"s55n" ("s ubsti tutio n", the replaced substrings are adjacent)
+
+"s010n" (has leading zeros)
+
+"s0ubstitution" (replaces an empty substring)
+
+Given a string word and an abbreviation abbr, return whether the string matches the given abbreviation.
+
+7
+
+
+ANSWER:
+JAVSCRIPT SOLUTION:
+/**
+ * @param {string} word
+ * @param {string} abbr
+ * @return {boolean}
+ */
+function validWordAbbreviation(word, abbr) {
+  let i = 0; // pointer for word
+  let j = 0; // pointer for abbr
+
+  while (i < word.length && j < abbr.length) {
+    const ch = abbr[j];
+
+    if (ch >= '0' && ch <= '9') {
+      // leading zero is invalid
+      if (ch === '0') return false;
+
+      let num = 0;
+      while (j < abbr.length && abbr[j] >= '0' && abbr[j] <= '9') {
+        num = num * 10 + (abbr[j].charCodeAt(0) - 48);
+        j++;
+      }
+      i += num; // skip `num` characters in word
+    } else {
+      // character must match
+      if (i >= word.length || word[i] !== ch) return false;
+      i++;
+      j++;
+    }
+  }
+
+  // both should be fully consumed
+  return i === word.length && j === abbr.length;
+}
+
+// Examples
+console.log(validWordAbbreviation("substitution", "s10n"));   // true
+console.log(validWordAbbreviation("substitution", "sub4u4")); // true
+console.log(validWordAbbreviation("substitution", "12"));     // true
+console.log(validWordAbbreviation("substitution", "s55n"));   // false
+console.log(validWordAbbreviation("substitution", "s010n"));  // false
+
+
+
+PYTHON SOLUTION:
+def validWordAbbreviation(word: str, abbr: str) -> bool:
+    i = j = 0  # i -> word, j -> abbr
+    while i < len(word) and j < len(abbr):
+        if abbr[j].isalpha():
+            if word[i] != abbr[j]:
+                return False
+            i += 1
+            j += 1
+        else:
+            if abbr[j] == '0':  # leading zero not allowed
+                return False
+            num = 0
+            while j < len(abbr) and abbr[j].isdigit():
+                num = num * 10 + int(abbr[j])
+                j += 1
+            i += num
+    return i == len(word) and j == len(abbr)
+
+
+# Example tests
+print(validWordAbbreviation("substitution", "s10n"))   # True
+print(validWordAbbreviation("substitution", "sub4u4")) # True
+print(validWordAbbreviation("substitution", "12"))     # True
+print(validWordAbbreviation("substitution", "s55n"))   # False
+print(validWordAbbreviation("substitution", "s010n"))  # False
+
+
+
+
+JAVA SOLUTION :
+class Solution {
+    public boolean validWordAbbreviation(String word, String abbr) {
+        int i = 0, j = 0;
+        while (i < word.length() && j < abbr.length()) {
+            if (Character.isLetter(abbr.charAt(j))) {
+                if (word.charAt(i) != abbr.charAt(j)) return false;
+                i++;
+                j++;
+            } else {
+                if (abbr.charAt(j) == '0') return false; // leading zero
+                int num = 0;
+                while (j < abbr.length() && Character.isDigit(abbr.charAt(j))) {
+                    num = num * 10 + (abbr.charAt(j) - '0');
+                    j++;
+                }
+                i += num;
+            }
+        }
+        return i == word.length() && j == abbr.length();
+    }
+
+    public static void main(String[] args) {
+        Solution sol = new Solution();
+        System.out.println(sol.validWordAbbreviation("substitution", "s10n"));   // true
+        System.out.println(sol.validWordAbbreviation("substitution", "sub4u4")); // true
+        System.out.println(sol.validWordAbbreviation("substitution", "12"));     // true
+        System.out.println(sol.validWordAbbreviation("substitution", "s55n"));   // false
+        System.out.println(sol.validWordAbbreviation("substitution", "s010n"));  // false
+    }
+}
