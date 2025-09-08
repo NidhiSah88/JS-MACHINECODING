@@ -1,0 +1,614 @@
+
+AriStrocat 
+Q1:
+var a = 5;
+
+function length() {
+  console.log(this.a);
+}
+
+var obj = {
+  a: 10,
+  method: function(a) {
+    length();         // line 9
+    arguments[0]();   // line 10
+  }
+};
+
+obj.method(length, 2);
+ans : 
+5
+undefined
+
+
+Q2: 
+<script>
+  var arr = [2, undefined];
+
+  for (i = 0; i < arr.length; i++) {
+    if (!arr[i])
+      continue;
+    else
+      console.log(i);
+  }
+</script>
+ans: 0
+
+var obj = {
+  x: "x",
+  func: function() {
+    var self = this;
+
+    console.log("Outer " + this, x);   // line 5 (⚠️ suspicious)
+    console.log(self.x);               // line 6
+
+    (function() {
+      console.log(this.x);             // line 8
+      console.log("inner " + self.x);  // line 9
+    }());
+  }
+};
+
+obj.func();
+ans : 
+Outer x
+x
+undefined
+inner x
+
+Q3: 
+var foo = function(x) {
+  var x = 5;
+  x = x + x;       // line 4
+  return zoo(x);   // line 5
+}
+
+var zoo = function(x) {
+  var x = 2;
+  return window.x + x;   // line 9 (assuming you meant `+`)
+}
+
+console.log(foo(x));
+
+ANS:  
+NaN
+
+reasns :
+foo is a function.
+
+zoo is a function.
+
+But notice: you are calling console.log(foo(x)); — yet x is not defined globally.
+→ This will throw ReferenceError: x is not defined immediately.
+
+Step 2: If you meant console.log(foo()); instead
+
+Let’s suppose you intended to test the functions without passing a global x.
+
+Call: foo()
+
+Inside foo, parameter x is ignored because of redeclaration:
+
+var x = 5;
+x = x + x;   // 10
+return zoo(10);
+
+
+So foo() → calls zoo(10).
+
+Inside zoo(10)
+var x = 2;          // local x
+return window.x + x;
+
+
+window.x: here x is not defined as a global variable, so window.x === undefined.
+
+So result = undefined + 2 → NaN.
+
+
+
+Question 4
+
+What does the given JavaScript code return?
+
+if (isNaN(3 { valueOf: function () { return null } })) {
+  alert("Not a number");
+}
+
+ans : 
+The code returns nothing (no alert triggered).
+
+
+REASON: 
+Step 1: The object
+{ valueOf: function () { return null } }
+
+
+This is an object with a valueOf method that always returns null.
+
+Step 2: Expression inside isNaN
+3 { valueOf: function() { return null } }
+
+
+⚠️ This is not valid JavaScript syntax as written.
+
+If your intent was:
+
+isNaN(3 + { valueOf: function() { return null } })
+
+
+then we can evaluate.
+
+Step 3: Evaluating 3 + object
+
+When JavaScript tries to evaluate 3 + object, it will:
+
+Call the object’s valueOf() → returns null.
+
+So the expression becomes 3 + null.
+
+null coerces to 0.
+
+→ 3 + 0 = 3.
+
+Step 4: isNaN(3)
+
+isNaN(3) → false.
+
+So the if condition fails, and alert("Not a number") does not run.
+
+✅ Final Answer:
+
+The code returns nothing (no alert triggered).
+
+
+Q5: 
+let x = 3;
+const y = 4;
+
+function z() {
+  var x = y = 0;
+  x++;
+  y++;
+  console.log(x + y);
+}
+
+z();
+
+ans : 
+Step 1: Global declarations
+let x = 3;      // block-scoped, does not go on window
+const y = 4;    // block-scoped, immutable
+
+Step 2: Function z
+var x = y = 0;
+
+
+This line is tricky in JavaScript:
+
+var x = y = 0;
+is parsed as:
+
+y = 0;      // assignment
+var x = 0;  // local variable
+
+
+Important: y = 0; does not declare a new local variable.
+Instead, it assigns 0 to the already-declared outer y.
+
+But outer y was declared with const y = 4.
+👉 Trying to reassign y will cause a TypeError (Assignment to constant variable.).
+
+✅ So the actual output:
+
+The code throws an error at runtime:
+
+TypeError: Assignment to constant variable.
+
+If the outer y were var y = 4; instead of const y = 4:
+
+Then inside z():
+
+var x = 0;
+
+y = 0; (overwrites global y)
+
+x++ → 1
+
+y++ → 1
+
+console.log(x + y) → 2
+
+👉 In that modified version, the output would be:
+
+2
+
+Q6: 
+promise
+  .then(
+    function(successMessage) {
+      console.log(successMessage);
+    },
+    function(errorMessage) {
+      console.log(errorMessage);
+    }
+  );
+ANS: 
+
+f the promise is fulfilled:
+
+resolve("Done!");
+
+
+→ Output:
+
+Done!
+
+
+If the promise is rejected:
+
+reject("Something went wrong");
+
+
+→ Output:
+
+Something went wrong
+
+Q7 :
+
+var promise = new Promise(function(resolve, reject) {
+  setTimeout(function() {
+    resolve("3 sec");
+  }, 3000);
+
+  setTimeout(function() {
+    reject("2 sec");
+  }, 2000);
+});
+
+ANS: 
+ 2 sec 
+
+
+Q8:
+var result = "javascript";
+
+var st = new Set("javascript"); // unique characters
+st.add("is");
+st.add("a");        // already in
+st.add("cool");
+st.add("language");
+
+var st1 = new Set(["java", "is", "a", "cool", "language"]);
+
+Set.prototype.subSet = function(otherSet) {
+  if (this.size > otherSet.size) {
+    return false;
+  } else {
+    for (var elem of this) {
+      if (!otherSet.has(elem)) {
+        result = elem;   // save the missing element
+        return false;
+      }
+    }
+    return true;
+  }
+};
+
+st1.subSet(st);
+console.log(result);
+
+ANS: java
+
+
+Step 1: Sets content
+
+st =
+
+{ 'j','a','v','s','c','r','i','p','t','is','cool','language' }
+
+
+st1 =
+
+{ 'java','is','a','cool','language' }
+
+Step 2: Call st1.subSet(st)
+
+Loop over elements in st1:
+
+elem = "java"
+
+st.has("java")? → ❌ No.
+
+So → result = "java"
+
+Returns false immediately.
+
+Step 3: Console output
+
+The subset check ends early.
+
+result = "java".
+
+console.log(result) prints:
+
+java
+
+ANAGRAM CODE IN javascript:
+
+METHOD1: 
+function areAnagrams(str1, str2) {
+  // Remove spaces and convert to lowercase
+  str1 = str1.replace(/\s+/g, '').toLowerCase();
+  str2 = str2.replace(/\s+/g, '').toLowerCase();
+
+  // Sort the characters
+  let sorted1 = str1.split('').sort().join('');
+  let sorted2 = str2.split('').sort().join('');
+
+  return sorted1 === sorted2;
+}
+
+// Example usage
+console.log(areAnagrams("listen", "silent")); // true
+console.log(areAnagrams("hello", "bello"));   // false
+
+Method 2: Using Character Count (More Efficient)
+
+function areAnagrams(str1, str2) {
+  str1 = str1.replace(/\s+/g, '').toLowerCase();
+  str2 = str2.replace(/\s+/g, '').toLowerCase();
+
+  if (str1.length !== str2.length) return false;
+
+  let count = {};
+
+  // Count characters in str1
+  for (let char of str1) {
+    count[char] = (count[char] || 0) + 1;
+  }
+
+  // Subtract counts using str2
+  for (let char of str2) {
+    if (!count[char]) return false;
+    count[char]--;
+  }
+
+  return true;
+}
+
+// Example usage
+console.log(areAnagrams("listen", "silent")); // true
+console.log(areAnagrams("triangle", "integral")); // true
+console.log(areAnagrams("apple", "pale"));   // false
+
+Q10:
+First non repeating character in word in jeavascript
+
+METHOD 1; Method: Using a Frequency Map:
+
+function firstNonRepeatingChar(str) {
+  // Convert to lowercase if needed
+  str = str.toLowerCase();
+
+  // Step 1: Count frequency of each character
+  const freq = {};
+  for (let char of str) {
+    freq[char] = (freq[char] || 0) + 1;
+  }
+
+  // Step 2: Find the first character with frequency 1
+  for (let char of str) {
+    if (freq[char] === 1) {
+      return char;
+    }
+  }
+
+  return null; // no non-repeating character
+}
+
+// Example usage
+console.log(firstNonRepeatingChar("javascript")); // "j"
+console.log(firstNonRepeatingChar("aabbcc"));     // null
+console.log(firstNonRepeatingChar("swiss"));      // "w"
+
+
+METHOS 2:  Code: Using Map
+
+function firstNonRepeatingChar(str) {
+  str = str.toLowerCase(); // optional: ignore case
+
+  const charCount = new Map();
+
+  // Step 1: Count frequency of each character
+  for (let char of str) {
+    charCount.set(char, (charCount.get(char) || 0) + 1);
+  }
+
+  // Step 2: Find the first character with count = 1
+  for (let char of str) {
+    if (charCount.get(char) === 1) {
+      return char;
+    }
+  }
+
+  return null; // if no non-repeating character
+}
+
+// Example usage
+console.log(firstNonRepeatingChar("javascript")); // Output: "j"
+console.log(firstNonRepeatingChar("aabbcc"));     // Output: null
+console.log(firstNonRepeatingChar("swiss"));      // Output: "w"
+
+
+Question 1
+
+Revisit Later
+
+JAVASCRIPTS
+
+Compe
+
+How to Attempt?
+
+Let alphabets represent numbers A = 1 B = 2 C = 3 and so on z = 26 ) With the given number(a digit sequence), please find all possible decodings from the given digit sequence. Return the number of possible decodings & print all the peable decodem in the implemented function.
+
+Examples
+
+1 Example 1:
+
+2
+
+3 Input: digits = 123
+
+4 Output: 3
+
+5
+
+6 Explanation:
+
+7 A = 1 , B = 2 C = 3 , L = 12 w = 23
+
+8 The possible decodings are: 123, 12, 23 ог
+
+9 "ABC", "LC", "AW"
+
+10
+
+11 Example 2:
+
+12
+
+I
+
+A
+
+13 Input: digits = 121
+
+// Read only region star
+
+Vanch som returnDigitec
+
+// nead only regla
+
+Input paramete
+
+Use Custo
+ChatGPT said:
+
+Ah! You are asking about the classic “Decode Ways” problem in JavaScript: given a digit sequence, return all possible decodings where A = 1, B = 2, …, Z = 26. Let’s implement it step by step.
+
+JavaScript Implementation: METHOD 1
+function decodeWays(digits) {
+  const results = [];
+
+  function backtrack(index, path) {
+    if (index === digits.length) {
+      results.push(path);
+      return;
+    }
+
+    // Single digit decoding
+    let num1 = parseInt(digits[index]);
+    if (num1 >= 1 && num1 <= 9) {
+      backtrack(index + 1, path + String.fromCharCode(64 + num1));
+    }
+
+    // Two-digit decoding
+    if (index + 1 < digits.length) {
+      let num2 = parseInt(digits.substring(index, index + 2));
+      if (num2 >= 10 && num2 <= 26) {
+        backtrack(index + 2, path + String.fromCharCode(64 + num2));
+      }
+    }
+  }
+
+  backtrack(0, "");
+
+  console.log("Number of decodings:", results.length);
+  console.log("All possible decodings:", results);
+
+  return results.length;
+}
+
+// Example usage
+decodeWays("123"); // Output: 3, ["ABC", "LC", "AW"]
+decodeWays("121"); // Output: 3, ["ABA", "AU", "LA"]
+
+✅ How It Works
+
+Use a recursive backtracking function backtrack(index, path).
+
+At each index, try:
+
+Single-digit decoding: 1 → A, 2 → B, …, 9 → I.
+
+Two-digit decoding: 10 → J, 11 → K, …, 26 → Z.
+
+If we reach the end of the string, push the current path to results.
+
+Finally, print:
+
+Number of decodings → results.length
+
+All possible decodings → results array
+
+METHOD 2: USING DP 
+
+function decodeWays(digits) {
+  const results = [];
+
+  function backtrack(index, path) {
+    if (index === digits.length) {
+      results.push(path);
+      return;
+    }
+
+    // Single digit decoding
+    let num1 = parseInt(digits[index]);
+    if (num1 >= 1 && num1 <= 9) {
+      backtrack(index + 1, path + String.fromCharCode(64 + num1));
+    }
+
+    // Two-digit decoding
+    if (index + 1 < digits.length) {
+      let num2 = parseInt(digits.substring(index, index + 2));
+      if (num2 >= 10 && num2 <= 26) {
+        backtrack(index + 2, path + String.fromCharCode(64 + num2));
+      }
+    }
+  }
+
+  backtrack(0, "");
+
+  console.log("Number of decodings:", results.length);
+  console.log("All possible decodings:", results);
+
+  return results.length;
+}
+
+// Example usage
+decodeWays("123"); // Output: 3, ["ABC", "LC", "AW"]
+decodeWays("121"); // Output: 3, ["ABA", "AU", "LA"]
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
