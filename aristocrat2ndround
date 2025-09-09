@@ -1,0 +1,63 @@
+1.promise.settled
+2. promise chain
+3. promise chain is synchronous or asynchronous
+4. conditional operator in ts.
+5. typescript data type
+6. why do we typescript in js
+7. Memory managemnet in JS?
+8. console.log(typeof typeof 123); 
+typeof 123 → "number"
+(because 123 is a number)
+
+typeof "number" → "string"
+(because "number" itself is a string value)
+
+So the output is:
+string
+
+9. find output:
+  let b: unknown = "10";
+  let a: any = "10";
+  console.log(a + 5);  
+  console.log(b + 5);
+output: 
+15
+error
+
+Q10. Make it such a way that output should be 15 for b:unknown
+ans:
+if (typeof b === "string") {
+ let num = parseInt(b, 10); 
+  console.log(num);
+  console.log(parseInt(b, 10) + 5); // 15
+} 
+Q11. generate paranthses code:
+function generateParenthesis(n) {
+  const result = [];
+
+  function backtrack(str, open, close) {
+    // If the current string is complete
+    if (str.length === 2 * n) {
+      result.push(str);
+      return;
+    }
+
+    // Add an opening parenthesis if we still have one left
+    if (open < n) {
+      backtrack(str + "(", open + 1, close);
+    }
+
+    // Add a closing parenthesis if it won’t break validity
+    if (close < open) {
+      backtrack(str + ")", open, close + 1);
+    }
+  }
+
+  backtrack("", 0, 0);
+  return result;
+}
+
+// Example: generate all valid parentheses for n = 3
+console.log(generateParenthesis(3));
+// Output: [ '((()))', '(()())', '(())()', '()(())', '()()()' ]
+
