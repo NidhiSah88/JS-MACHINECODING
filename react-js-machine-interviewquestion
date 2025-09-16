@@ -1,0 +1,170 @@
+import { prototype } from "events"
+
+q1: what are the different ways to create object in JS 
+ans: 
+
+Object constructor
+eg: var obj = new Object();
+Object's create method 
+eg: var obj = Object.create(null);
+Object literal syntax
+eg: var obj = {};
+let name = {name: 'nidhi'};
+Function constructor 
+eg: 
+function Person(name, age) {
+  this.name = name;
+  this.age = age;   
+}
+let obj = new Person('nidhi', 24);
+
+Es6 class syntax 
+eg:
+class Person {
+  constructor(name, age) {
+    this.name = name;   
+  }
+}
+let obj = new Person('nidhi', 24);
+Q2 difference b/w call, apply, bind 
+Q3 difference b/w splice and slice 
+q4 prototype chaining vs prototypal inheritance 
+Q5: what is first class function in js 
+q6: what is HIGHER ORDER FUNCTION 
+q7: how do u redeclare a variable in swicth block without any error 
+ans : 
+switch(x){
+    case 0 : {
+        let name ;
+        break ;
+    }
+    case 1 : {  
+        let name ; // no syntax error for redeclaration
+        break ; 
+    }
+}
+
+q8 : what is temporal dead zone
+q9 : what is memoization 
+q10: what is closure and its scope chain 
+ans : scope chains: inner function scope, access to outer function scope, 
+acces to global scope 
+
+q11: 
+
+Coding question for senior developer 
+
+Q1: Implement a function splitIntoGroups(array, size =1 ) that splits an array into subarrays of the given size .
+the last group may be smaller if there are not enough elements. THE original array must remain unchnaged 
+eg: splitIntoGroups([1,2,3,4,5], 2) => [[1,2], [3,4], [5]]
+splitIntoGroups([1,2,3,4,5], 3) => [[1,2,3], [4,5]]
+splitIntoGroups([1,2,3,4,5]) => [[1], [2], [3], [4], [5]]
+ans: 
+
+
+
+CRAS24 :
+JS HOISTING
+PROMISES, primises.all, settllled, 
+assignment react+tailwindcss+redux
+
+call api fetch data from api and redux when page get s refresh
+performance optimization in js, nextjs, reactjs
+js output based question
+js polyfill of memoisation - implement function to get memoized value 
+core web vitals lcp, cls,FID(first input delaY), INP
+when page loads what are the values of LCP, CLS 
+image optimization:
+usememo hook 
+web app profilling 
+
+what challenges u faced, how did u solved it 
+
+zepto :
+
+js round:
+event loop 
+promises, async/await 
+hoisting 
+why promises came into picture, promises.all, settled promises 
+hoisting 
+closures and its output questions + primoses output question 
+prototype and prototypal  inheritence 
+this keyword 
+flattening objects 
+ 
+Machine coding round :
+design form based ui using reactjs , there are three tabs : profile, interest, settings with specific fields requirements like:
+age field: only numeric values allowed 
+email field: validation to ensure the correct format 
+Incorporate dropdowns, radio button, checkbox,
+ implement validation for mandatory fields 
+ data persistence accross tabs(suppose u open same tabe in one more diffrent browse , then data should stay there- how do you manage this - use local storage  )
+a submit button that submitted the entire form only on the last  tab 
+ asked for scalability, maitainability
+
+Interviewer suggested creating form configuration object to dynamically generate the form , sparking a discussion about :
+
+scalability: how easily the form could be extended or modified without rewriting significant portions of the code
+
+maintainability : how  modular, readable and organized code is crucial for large teams and long -term projects
+
+
+Hiring Manager round :
+
+paast projects project walkthrough 
+challenges u faced, solution, 
+most challenging part of projects  u have done 
+design pattern: singleton design, factory, observer that i ahd applied in my projects to solve complex problems 
+code organization, 
+performance optimization 
+collaboration 
+
+AMAZON - gyani programmer 
+HTML version,
+to upload file which tag we use 
+current version of CSS 
+way to implemet CSS
+what is the position attributes 
+what is the difference b/w marging and padding 
+flex in css- justify content, align itmes, 
+major features of react 
+what is jsx 
+functional vs class based componnet 
+what is state, props, callback function (child to parent data pass) 
+what is pure components, lazy loading
+
+AAKASH INGOLE - react coding 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
