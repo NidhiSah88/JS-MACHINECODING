@@ -61,7 +61,39 @@ let nums3 = [1,1,5];
 nextPermutation(nums3);
 console.log(nums3); // [1,5,1]
 
-
+SOLUTIN BY TYPESCRIPT
+function nextPermutation(nums: number[]): void {
+    const length: number = nums.length;
+  
+    // Step 1: Find the rightmost position where nums[i] < nums[i + 1]
+    // This is the "pivot" position where we need to make a change
+    let pivotIndex: number = length - 2;
+    while (pivotIndex >= 0 && nums[pivotIndex] >= nums[pivotIndex + 1]) {
+        pivotIndex--;
+    }
+  
+    // Step 2: If a valid pivot exists, find the smallest number to its right
+    // that is still greater than the pivot, then swap them
+    if (pivotIndex >= 0) {
+        for (let swapIndex: number = length - 1; swapIndex > pivotIndex; swapIndex--) {
+            if (nums[swapIndex] > nums[pivotIndex]) {
+                // Swap the pivot with the found element
+                [nums[pivotIndex], nums[swapIndex]] = [nums[swapIndex], nums[pivotIndex]];
+                break;
+            }
+        }
+    }
+  
+    // Step 3: Reverse the suffix starting from pivotIndex + 1
+    // This ensures we get the next smallest permutation
+    let left: number = pivotIndex + 1;
+    let right: number = length - 1;
+    while (left < right) {
+        [nums[left], nums[right]] = [nums[right], nums[left]];
+        left++;
+        right--;
+    }
+}
 
 
 
