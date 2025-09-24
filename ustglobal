@@ -1,0 +1,62 @@
+
+type useDetails = {
+    name : string;
+    age: number;
+    salary: number ; 
+}
+
+let arr: useDetails[] = [
+    {
+        name: "nidhi",
+        age: 26,
+        salary: 16000
+    },
+    {
+        name: "john",
+        age: 29,
+        salary: 150000
+    },
+    {
+        name: "nidhi",
+        age: 26,
+        salary: 16000
+    }
+]
+
+
+function findDup(arr:useDetails[] ){
+    const uniq : useDetails[] = [];
+
+    for(let i = 0; i< arr.length; i++){
+        if(!uniq.includes(arr[i])){
+
+            uniq.push(arr[i]);
+            console.log()
+        }
+
+    }
+
+    return uniq;
+ }
+
+
+console.log("Dup:: ", findDup(arr));
+
+output:
+for (var i = 1; i <= 5; i++) {
+
+  (function (j) {
+
+    setTimeout(function () {
+
+      console.log(j);
+
+    }, j * 1000);
+
+  })(i);
+
+}
+describe , hit block in jst,
+usecallback vs use memo,
+
+
