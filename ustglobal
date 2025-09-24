@@ -1,46 +1,121 @@
-
 type useDetails = {
-    name : string;
+    name: string;
     age: number;
-    salary: number ; 
-}
+    salary: number;
+};
 
 let arr: useDetails[] = [
-    {
-        name: "nidhi",
-        age: 26,
-        salary: 16000
-    },
-    {
-        name: "john",
-        age: 29,
-        salary: 150000
-    },
-    {
-        name: "nidhi",
-        age: 26,
-        salary: 16000
-    }
-]
+    { name: "nidhi", age: 26, salary: 16000 },
+    { name: "john", age: 29, salary: 150000 },
+    { name: "nidhi", age: 26, salary: 16000 } // duplicate
+];
 
+function findDup(arr: useDetails[]): useDetails[] {
+    const uniq: useDetails[] = [];
 
-function findDup(arr:useDetails[] ){
-    const uniq : useDetails[] = [];
+    for (let i = 0; i < arr.length; i++) {
+        let isDuplicate = false;
 
-    for(let i = 0; i< arr.length; i++){
-        if(!uniq.includes(arr[i])){
-
-            uniq.push(arr[i]);
-            console.log()
+        for (let j = 0; j < uniq.length; j++) {
+            if (
+                arr[i].name === uniq[j].name &&
+                arr[i].age === uniq[j].age &&
+                arr[i].salary === uniq[j].salary
+            ) {
+                isDuplicate = true;
+                break;
+            }
         }
 
+        if (!isDuplicate) {
+            uniq.push(arr[i]);
+        }
     }
 
     return uniq;
- }
+}
+
+console.log("Unique: ", findDup(arr));
+✅ Output:
+
+ts
+Copy code
+Unique: [
+  { name: "nidhi", age: 26, salary: 16000 },
+  { name: "john", age: 29, salary: 150000 }
+]
+🔹 Explanation
+includes() does not work for object content, only references.
+
+We manually loop through uniq and compare all properties.
+
+If no match → push to uniq.
+
+If you want, I can also show a shorter version using JSON.stringify inside a for loop, which works for any object without manually comparing each property.
+
+Do you want me to show that?
 
 
-console.log("Dup:: ", findDup(arr));
+
+
+
+
+
+You said:
+use include
+
+
+ChatGPT said:
+Ah, you want to still use includes, but the problem is includes only works for primitive values, not objects. To use it, we can convert the objects to a string representation like JSON.stringify.
+
+Here’s how you can fix your code:
+
+ts
+Copy code
+type useDetails = {
+  name: string;
+  age: number;
+  salary: number;
+};
+
+let arr: useDetails[] = [
+  { name: "nidhi", age: 26, salary: 16000 },
+  { name: "john", age: 29, salary: 150000 },
+  { name: "nidhi", age: 26, salary: 16000 } // duplicate
+];
+
+function findDup(arr: useDetails[]): useDetails[] {
+  const uniq: useDetails[] = [];
+  const seen: string[] = [];
+
+  for (let i = 0; i < arr.length; i++) {
+    const str = JSON.stringify(arr[i]); // convert object to string
+
+    if (!seen.includes(str)) { // use includes on string
+      seen.push(str);
+      uniq.push(arr[i]);
+    }
+  }
+
+  return uniq;
+}
+
+console.log("Unique: ", findDup(arr));
+✅ Output:
+
+ts
+Copy code
+Unique: [
+  { name: "nidhi", age: 26, salary: 16000 },
+  { name: "john", age: 29, salary: 150000 }
+]
+🔹 How it works
+Convert each object to a string (JSON.stringify).
+
+Use includes on the string array (seen) to check duplicates.
+
+Only push objects to uniq if the string hasn’t been seen yet.
+
 
 output:
 for (var i = 1; i <= 5; i++) {
@@ -58,5 +133,8 @@ for (var i = 1; i <= 5; i++) {
 }
 describe , hit block in jst,
 usecallback vs use memo,
+uselayout
+canvas
+type vs interface
 
 
