@@ -1,0 +1,74 @@
+SYSTEM DESIGN :
+Real-time Collaborative Todo (Next.js Route Handlers)
+
+Goal:
+Design and discuss a real-time collaborative Todo app that supports concurrent edits and provides a smooth user experience.
+
+Core Requirements (must)
+Optimistic Add with Rollback:
+When adding a new todo, update the UI immediately and roll back if the server request fails.
+Version Conflict Detection & Resolution:
+Use a version/etag field. On PATCH edits, detect conflicts and return 409 on mismatch; refetch and notify user on conflict.
+Basic Error Handling & User Feedback:
+Handle API errors gracefully and provide visible feedback to the user.
+
+Implementation Slice to Discuss
+API Routes:
+app/api/todos/route.ts → GET (all todos), POST (add)
+app/api/todos/[id]/route.ts → PATCH (edit with version check)
+Data Layer: lib/db.ts in-memory store with {id, text, done, version, updatedAt}
+Client Page:
+Use SWR or React Query
+mutate/useMutation for optimistic add + rollback
+Handle 409 conflicts → refetch + user notice
+
+
+
+Virtual Scrolling with Search
+Goal:
+Build a performant list rendering solution for 10,000 items with search and keyboard navigation.
+
+Clarified Requirements
+Fixed Item Height: Assume all items are 50px tall for simplicity.
+Focus: Concentrate on virtualization math (start/end indices from scrollTop) and smooth scroll performance, not pixel-perfect layout.
+Keyboard Navigation: You can use pseudocode showing ↑/↓ key handler logic for selection movement.
+
+Implementation Slice to Discuss
+RSC wrapper loads a seed data array; client component renders the virtualized list.
+Implement viewport container + overscan calculation.
+Debounced search (via React useDeferredValue or manual debounce).
+Preserve scroll position when filtering (don’t reset scroll on search).
+Display skeletons (loading.tsx) while fetching initial data.
+
+
+stackblitz next Js starter app
+
+getServerSideProps  vs getStaticProps 
+Difference between z-index and Stacking Context 
+cascading in CSS
+Dark mode implementation in tailwindCSS (explain, class vs media)
+what is JustIn Time in tailwindCSS
+Image optimization in nextjs
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
