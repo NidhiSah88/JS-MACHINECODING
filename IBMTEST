@@ -1,0 +1,185 @@
+Q1: find sum in array
+Question 2
+
+Given the name of a marathon and a gender, identify the fastest runner of that gender in the marathon. Use HTTP GE requests to query a marathon runner database at 
+the URL https://jsonmock.hackerrank.com/api/marathon. The results are paginated and can be accessed by appending &page= (num) to the query string, where (num) is the page number.
+
+To filter the query by specific fields, append (fieldname]= (value) to the URL. For example,
+https://jsonmock.hackerrank.com/api/marathon?sex-female&page=2 returns the second page of the filtered list of female runners.
+The query response from the API includes these fields:
+page: the current page
+per_page: the maximum results per page
+total: the total number of records
+total_pages: the total number of pages for the query
+data: an array of JSON objects containing runner information
+Each object in the data field includes the following
+name: the name of the runner
+: Confidential
+marathon_name: the name of the marathon
+Rank
+sex: the sex of the marathon runner
+avgheartbeat: the average heart rate of the runner during the marathon
+- other details not relevant to this question
+
+other details not relevant to this question
+For example, the record from
+https://jsonmock.hackefrank.com/api/marathon includes the following:
+"name": "Gene Zboncak-Hansen",
+"sex": "female",
+"id": "867b0d8c-2b23-4e7e-aabc-
+5747f67969f1",
+
+"age": 99,
+
+"top_speed": 13.42,
+
+"bottom_speed": 4.75,
+
+"average_speed": 7.01,
+
+"avgheartbeat": 114,
+
+"distance_run": 18.066,
+
+"marathon_name": "Sunset Serenity
+
+Marathon",
+
+Rank Con
+
+"country": "Falkland Islands (Malvinas)",
+
+"number_of_participants": 40,
+
+"personal_best_time": 2914,
+
+"stops_taken": 5,
+
+"position": 40
+
+}
+
+BQ@gmail.com
+
+Return the average heart rate of the runners meeting the criteria, rounded down to the nearest integer.
+Function Description
+Complete the function averageHeartBeat in the editor with the following parameter(s):
+string marathon: the marathon name
+string sex: the sex to filter the runners by
+Returns
+int: the average heart rate of the runners of the given sex In the specified marathon
+Note: Please review the header in the code stub to see
+Note: Please review the header in the code stub to see available libraries for API requests in the selected language. Required libraries can be imported to solve the question.
+Check our full list of supported libraries at
+https://www.hackerrank.com/environment.
+
+Input Format For Custom Testing
+
+Sample Case O
+
+Sample Input For Custom Testing
+
+Cityscape Marathon
+
+HackerRank Confidential
+
+female
+
+Sample Output
+
+120
+
+Explanation
+
+@gmail.com
+
+The average heart rate of 25 female participants in the Cityscape Marathon comes out to be 120.4, which, when rounded down, is 120.
+
+▼ Sample Case 1
+
+Sample Input For Custom Testing
+
+Cityscape Marathon
+
+male
+
+Sample Output
+
+121
+
+sah88@gmail.com
+
+Explanation
+
+confio
+
+The average heart rate of the 15 male participants in the Cityscape Marathon is 121.73, which when rounded down is 121.
+
+SOLUTION:
+'use strict';
+
+const https = require('https');
+
+function fetchPage(url) {
+    return new Promise((resolve, reject) => {
+        https.get(url, (res) => {
+            let data = '';
+            res.on('data', (chunk) => data += chunk);
+            res.on('end', () => {
+                try {
+                    resolve(JSON.parse(data));
+                } catch (err) {
+                    reject(err);
+                }
+            });
+        }).on('error', reject);
+    });
+}
+
+async function averageHeartBeat(marathon, sex) {
+    let page = 1;
+    let totalHeartbeats = 0;
+    let count = 0;
+    let totalPages = 1;
+
+    do {
+        const url = `https://jsonmock.hackerrank.com/api/marathon?marathon_name=${encodeURIComponent(marathon)}&sex=${sex}&page=${page}`;
+        const response = await fetchPage(url);
+
+        totalPages = response.total_pages;
+
+        for (const runner of response.data) {
+            totalHeartbeats += runner.avgheartbeat;
+            count++;
+        }
+
+        page++;
+    } while (page <= totalPages);
+
+    if (count === 0) return 0;
+    return Math.floor(totalHeartbeats / count);
+}
+
+const fs = require('fs');
+
+async function main() {
+    const ws = fs.createWriteStream(process.env.OUTPUT_PATH);
+    const marathon = readLine().trim();
+    const sex = readLine().trim();
+
+    const result = await averageHeartBeat(marathon, sex);
+    ws.write(result + '\n');
+    ws.end();
+}
+
+let inputString = '';
+let currentLine = 0;
+process.stdin.on('data', inputStdin => inputString += inputStdin);
+process.stdin.on('end', () => {
+    inputString = inputString.split('\n');
+    main();
+});
+
+function readLine() {
+    return inputString[currentLine++];
+}
