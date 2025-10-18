@@ -17,7 +17,7 @@ function SumOfDigit(num){
 
 console.log("sum digit:", SumOfDigit(1234));
 
-
+how did you impletement authorization, authentication in backend nodejs, pyhton
 how you optimize sql query used in your application,
 how did you maintain consistency in backend python(acid)
 if there is slow rendering in react how did you optimize it
