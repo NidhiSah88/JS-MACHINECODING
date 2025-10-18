@@ -1,0 +1,50 @@
+
+
+single digit sum if sum < 10, then call function recursivley and print sum in single digit
+function SumOfDigit(num){
+   let no = Math.abs(num);
+    if(no < 10) {
+        return no;
+    }
+    let sum = 0;
+    while(no > 0){
+        sum += no % 10; 
+        no = Math.floor(no / 10); 
+        
+    }
+    return SumOfDigit(sum);
+}
+
+console.log("sum digit:", SumOfDigit(1234));
+
+
+how you optimize sql query used in your application,
+how did you maintain consistency in backend python(acid)
+if there is slow rendering in react how did you optimize it
+how will you use nextjs in microfrontend architecture.
+descriptor function in python how it is benefiteed form normal function
+how did  you optimize in postgresql, indexing used etc
+have you used django, fast api
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
