@@ -1,0 +1,1072 @@
+Caching in backend system design
+Hari M
+Hari M
+Machine Learning Engineer | LLM · LangChain · RAG · AutoGen · FastAPI · AWS | Building Production AI Systems | React · TypeScript | 29K+ Developer Community
+
+
+May 10, 2026
+Caching is a technique used to store frequently accessed data temporarily in a fast storage layer so the system can retrieve it quickly instead of recomputing or refetching it every time.
+
+Simple Definition
+Cache = Temporary fast storage 
+Purpose:
+
+improve speed
+reduce latency
+reduce database/API load
+
+Real-Life Example
+Think of a tea shop owner.
+
+Without cache:
+
+Customer orders tea
+ ↓
+Owner prepares from scratch every time 
+With cache:
+
+Popular tea already prepared
+ ↓
+Serve immediately 
+Faster.
+
+In Software
+Without cache:
+
+User Request
+   ↓
+Database
+   ↓
+Response 
+Every request hits DB.
+
+Slow + expensive.
+
+With cache
+User Request
+   ↓
+Cache
+   ↓
+(if missing)
+Database 
+If data exists in cache:
+
+instant response
+
+Why Caching is Important
+Caching improves:
+
+performance
+scalability
+user experience
+
+Example
+Without cache:
+
+DB query = 500ms 
+With cache:
+
+Cache lookup = 5ms 
+Huge improvement.
+
+Cache Flow
+Request
+  ↓
+Check Cache
+  ↓
+Found? ── YES → Return cached data
+  ↓
+NO
+  ↓
+Fetch from DB/API
+  ↓
+Store in Cache
+  ↓
+Return response 
+Example in AI/LLM Systems
+In your WhatsApp bot:
+
+User asks:
+
+"What is my last order?" 
+Instead of querying database repeatedly:
+
+Redis Cache
+   ↓
+last_order = pizza 
+Instant reply.
+
+Types of Caching
+1. Memory Cache
+Stored in RAM.
+
+Very fast.
+
+Examples:
+
+Redis
+Memcached
+
+2. Database Cache
+Database stores query results.
+
+Example:
+
+SELECT * FROM users 
+Saved temporarily.
+
+3. CDN Cache
+Caches:
+
+images
+videos
+static files
+
+Examples:
+
+Cloudflare
+Amazon CloudFront
+
+4. Browser Cache
+Web browsers store:
+
+CSS
+JS
+images
+
+Locally.
+
+Cache in LLM Systems
+AI systems heavily use caching.
+
+Example
+Without cache:
+
+LLM call every time 
+Expensive.
+
+With cache:
+
+Same prompt
+ ↓
+Return previous response 
+Reduces:
+
+token cost
+latency
+
+LangGraph + Cache
+Example:
+
+User Memory
+Conversation History
+Tool Responses
+Embedding Results 
+Can be cached.
+
+Redis in AI Systems
+Very common.
+
+Architecture:
+
+LLM App
+   ↓
+Redis Cache
+   ↓
+Database/API 
+Used for:
+
+session state
+temporary memory
+rate limiting
+token cache
+
+Cache Expiration (TTL)
+Cache should expire.
+
+Example:
+
+OTP cache = 5 minutes 
+This is called:
+
+TTL = Time To Live 
+Example Redis TTL
+redis.set(
+    "user_123",
+    "hello",
+    ex=300
+) 
+Expires after:
+
+300 seconds 
+Cache Hit vs Cache Miss
+Cache Hit
+Data found in cache.
+
+Fast.
+
+Request → Cache → Found 
+Cache Miss
+Data not found.
+
+Need DB/API.
+
+Request → Cache → DB 
+Example Using Python
+Simple cache:
+
+cache = {}
+
+def get_data(user_id):
+
+    if user_id in cache:
+        return cache[user_id]
+
+    data = database_call()
+
+    cache[user_id] = data
+
+    return data 
+Problems Without Cache
+At scale:
+
+DB overload
+slow APIs
+high cloud cost
+bad UX
+
+Cache in WhatsApp Bot
+Useful for:
+
+conversation state
+user preferences
+recent prompts
+embeddings
+session memory
+
+Typical Production Setup
+User
+ ↓
+Load Balancer
+ ↓
+App Server
+ ↓
+Redis Cache
+ ↓
+PostgreSQL / DynamoDB 
+DynamoDB vs Redis
+Here’s a list view comparison of Redis vs DynamoDB — concise, modular, and easy to share:
+
+⚡ Redis vs DynamoDB — List View
+Speed
+Persistence
+Memory-based
+Long-term storage
+Best For
+Typical Latency
+
+🎯 Key Insight
+Use Redis when you need ultra-fast, in-memory caching.
+Use DynamoDB when you need persistent, scalable, long-term storage.
+Many production systems combine both: Redis for speed, DynamoDB for durability.
+
+Best Practice
+Use both:
+
+Redis → cache
+DynamoDB → permanent storage 
+This is very common in AI systems.
+
+Cache Strategies
+1. Cache Aside
+Most common.
+
+App checks cache first 
+2. Write Through
+Update:
+
+cache
+DB together
+
+3. Write Back
+Update cache first. DB later.
+
+Fast but risky.
+
+AI Example
+User asks:
+
+"Summarize this PDF" 
+Cache:
+
+summary_hash → summary 
+Next request:
+
+no LLM call needed
+
+Huge savings.
+
+Important Concept
+Cache is NOT source of truth.
+
+Source of truth:
+
+PostgreSQL
+DynamoDB
+S3
+
+Cache:
+
+temporary fast copy 
+Most Important Benefit
+Caching gives:
+
+Lower latency
+Lower cost
+Higher scalability
+Better UX 
+That is why almost every production system uses caching.
+
+
+
+Benefits of Caching — 20 Important Topics
+Improves Application Performance Faster access to frequently used data reduces response time.
+Reduces Database Load Minimizes repeated database queries and improves DB efficiency.
+Enhances User Experience Applications and websites feel faster and smoother.
+Decreases Server CPU Usage Prevents repeated calculations and processing tasks.
+Saves Network Bandwidth Reduces unnecessary data transfer between services.
+Supports High Scalability Helps applications handle millions of users efficiently.
+Reduces API Response Latency Cached API responses are delivered much faster.
+Improves Microservices Performance Services can reuse shared cached data instead of repeated calls.
+Lowers Infrastructure Cost Reduces cloud compute, storage, and database expenses.
+Boosts Website SEO Faster page load speeds improve search engine rankings.
+Improves AI/LLM System Speed Reuses embeddings, prompts, and generated responses.
+Enhances CDN Performance Static files are served from edge locations near users.
+Optimizes Read-Heavy Applications Perfect for systems with frequent read operations.
+Reduces Third-Party API Costs Avoids repeated paid API requests.
+Supports Offline Access Mobile and web apps can use cached data without internet.
+Improves Session Management Stores user login sessions and authentication tokens efficiently.
+Speeds Up Analytics & Reporting Frequently accessed reports load instantly.
+Reduces Disk I/O Operations Memory access is significantly faster than disk access.
+Handles Traffic Spikes Better Prevents backend overload during peak traffic.
+Improves Real-Time System Performance Useful in chat apps, gaming, stock trading, and live dashboards.
+
+Common Areas Where Caching Is Used
+Web Applications
+APIs
+Databases
+AI/LLM Systems
+Mobile Apps
+CDN Networks
+E-commerce Platforms
+Streaming Services
+Banking Systems
+Gaming Applications
+
+Popular Caching Technologies
+Redis
+Memcached Amazon ElastiCache
+Varnish Cache
+Nginx
+
+
+
+Types of Caching
+
+
+1. Browser Cache
+Stores website resources like images, CSS, and JavaScript inside the user’s browser.
+
+Example: Chrome stores website images locally to load pages faster.
+
+2. Memory Cache (In-Memory Cache)
+Stores data in RAM for extremely fast access.
+
+Example Technologies:
+
+Redis
+Memcached
+
+3. Database Cache
+Caches frequently executed database queries and records.
+
+Benefit: Reduces database read operations.
+
+4. Application Cache
+Stores application-level data like configurations, sessions, and computed results.
+
+Used In: Backend services and APIs.
+
+5. CDN Cache
+Caches static content on edge servers closer to users.
+
+Examples:
+
+Cloudflare
+Akamai Technologies
+
+6. DNS Cache
+Stores domain name lookups temporarily.
+
+Benefit: Speeds up website access by avoiding repeated DNS resolution.
+
+7. API Cache
+Stores API responses for repeated requests.
+
+Common Use Case: Weather APIs, payment APIs, AI APIs.
+
+8. Disk Cache
+Stores cached data on storage devices instead of RAM.
+
+Benefit: Useful for large datasets.
+
+9. Distributed Cache
+Cache shared across multiple servers or services.
+
+Used In: Large-scale microservices architecture.
+
+10. Session Cache
+Stores user session and authentication data.
+
+Example: Login session tokens.
+
+11. Object Cache
+Caches complete objects or serialized data.
+
+Common In: ORM frameworks and web applications.
+
+12. Query Cache
+Caches SQL query results.
+
+Benefit: Avoids executing the same query repeatedly.
+
+13. Page Cache
+Stores fully rendered web pages.
+
+Common In: WordPress and CMS platforms.
+
+14. Opcode Cache
+Caches compiled code instead of recompiling every request.
+
+Example: PHP OPcache.
+
+15. Reverse Proxy Cache
+Caches responses between client and backend server.
+
+Examples:
+
+Nginx
+Varnish Cache
+
+16. Edge Cache
+Stores data at edge locations geographically near users.
+
+Benefit: Reduces latency globally.
+
+17. CPU Cache
+Hardware-level cache inside processors.
+
+Types: L1, L2, L3 Cache.
+
+18. GPU Cache
+Used in graphics processing and AI workloads.
+
+Benefit: Improves rendering and parallel computations.
+
+19. AI/LLM Cache
+Caches prompts, embeddings, and generated responses.
+
+Used In: Chatbots and AI assistants.
+
+20. Write-Through / Write-Back Cache
+Caching strategies used in storage and databases.
+
+Write-Through: Updates cache and database together.
+Write-Back: Updates cache first and database later.
+
+Popular Caching Tools
+Redis
+Memcached
+Hazelcast
+Apache Ignite
+Amazon ElastiCache
+
+
+
+
+
+
+
+Famous Industry-Standard Caching Technologies
+In-Memory Caching
+1. Redis
+Most popular caching technology
+Extremely fast (RAM-based)
+Used for: Session storage API caching Real-time analytics AI/LLM caching
+Common in startups and enterprise systems
+
+Companies Using:
+
+OpenAI
+Netflix
+Uber
+
+2. Memcached
+Lightweight and simple cache
+Best for high-speed key-value caching
+Commonly used in web applications
+
+Companies Using:
+
+Facebook
+Wikipedia
+
+CDN & Edge Caching
+3. Cloudflare
+Global CDN and edge caching
+Protects against traffic spikes and DDoS
+Speeds up websites worldwide
+
+4. Akamai Technologies
+Enterprise-grade CDN
+Used by banking, media, and e-commerce companies
+
+Reverse Proxy Caching
+5. Nginx
+Industry-standard web server
+Supports reverse proxy caching
+Widely used in microservices architecture
+
+6. Varnish Cache
+Specialized HTTP caching layer
+Extremely fast website caching
+
+Common In: News portals and high-traffic websites.
+
+Database Caching
+7. Amazon ElastiCache
+Managed Redis and Memcached service
+Common in cloud-native architectures
+
+8. Hazelcast
+Distributed in-memory computing platform
+Popular in banking and fintech systems
+
+9. Apache Ignite
+High-performance distributed cache
+Used in real-time analytics systems
+
+Java Ecosystem Caching
+10. Ehcache
+Popular Java caching framework
+Used in enterprise Java applications
+
+11. Caffeine
+Modern high-performance Java cache
+Common in Spring Boot applications
+
+Kubernetes & Cloud Native
+12. Envoy Proxy
+Used for API gateway and service mesh caching
+
+13. Kubernetes + Redis
+Common industry combination for scalable systems
+
+
+
+🗂️ Caching Strategies 
+
+
+Cache-aside
+
+
+
+Cache-Aside is also called Lazy Loading
+Application manages both cache and database
+Redis is commonly used as cache
+DynamoDB/MySQL/PostgreSQL act as primary database
+Database is the source of truth
+
+Step-by-Step Flow
+User sends request
+Application checks Redis cache
+If Cache Hit → return cached data
+If Cache Miss → fetch from database
+Store database result into Redis
+Return response to user
+
+Read Flow
+Check cache first
+Cache hit gives very fast response
+Cache miss triggers DB query
+Retrieved data gets cached
+Future requests become faster
+
+Write Flow
+Update data in database
+Delete old cache entry
+Next read fetches fresh data
+Fresh data is stored back in cache
+
+Why Cache is Deleted After Write
+Prevent stale data
+Ensure latest DB data is served
+Force cache refresh on next request
+
+Cache Hit
+Data found in Redis
+Very low latency
+Fast API response
+Reduces DB load
+
+Cache Miss
+Data not available in cache
+Request goes to database
+Slightly slower response
+Cache gets updated afterward
+
+Advantages
+Faster read performance
+Lower database traffic
+Better scalability
+Reduced infrastructure cost
+Easy to implement
+Efficient memory usage
+
+Disadvantages
+Cache invalidation complexity
+Risk of stale data
+First request latency
+Cache stampede issues
+Extra cache management needed
+
+Best Practices
+Use TTL (Time To Live)
+Invalidate cache after updates
+Cache only frequently used data
+Monitor cache hit ratio
+Use distributed locking for hot keys
+
+Common Use Cases
+E-commerce product APIs
+User profile systems
+Social media feeds
+Analytics dashboards
+Session management
+Microservices architecture
+
+Typical Architecture
+Client
+   ↓
+Application/API
+   ↓
+Redis Cache
+   ↓
+DynamoDB / SQL Database 
+Example Technologies
+Redis
+DynamoDB
+MySQL
+PostgreSQL
+Memcached
+Spring Boot
+Node.js
+Python FastAPI
+
+
+See content credentials
+Article content
+
+
+
+
+Write-through
+
+Write-Through Cache Pattern
+Write-Through is a synchronous caching strategy
+Data is written to cache and database together
+Cache always stays updated with latest data
+Commonly used when consistency is important
+Redis acts as cache layer
+DynamoDB/MySQL/PostgreSQL act as primary database
+
+Step-by-Step Flow
+User sends write request
+Application writes data to Redis cache
+Same data is immediately written to database
+Both cache and database stay synchronized
+Success response returned to user
+
+Read Flow
+Application checks cache first
+Cache usually contains latest data
+Data returned directly from Redis
+Database reads are reduced
+
+Write Flow
+Write request received
+Update cache immediately
+Update database immediately
+Return success only after both succeed
+
+Main Goal
+Keep cache and database consistent
+Avoid stale cache data
+Ensure fresh reads from cache
+
+Advantages
+Cache always has latest data
+Strong consistency
+Faster read operations
+Simplifies cache management
+No stale cache problem
+Good for critical systems
+
+Disadvantages
+Write operations become slower
+Higher write latency
+Every write updates two systems
+Unused data may still occupy cache memory
+Increased infrastructure cost
+
+Best Use Cases
+Banking systems
+Payment applications
+Inventory management
+Order management systems
+Financial applications
+Real-time transactional systems
+
+Cache Hit
+Data found in Redis
+Very fast response
+Latest data usually available
+
+Cache Miss
+Rare in write-through systems
+Cache already populated during writes
+
+Best Practices
+Use durable cache storage
+Monitor write latency
+Use retry mechanisms
+Handle partial failures carefully
+Use replication for high availability
+
+Typical Architecture
+Client
+   ↓
+Application/API
+   ↓
+Redis Cache
+   ↓
+DynamoDB / SQL Database 
+Data Flow
+Write Request
+      ↓
+Update Redis Cache
+      ↓
+Update Database
+      ↓
+Return Success 
+Example Python Flow
+def update_product(product_id, data):
+
+    # Update cache
+    redis.set(product_id, data)
+
+    # Update database
+    dynamodb.update_item(product_id, data)
+
+    return "Success" 
+Technologies Commonly Used
+Redis
+DynamoDB
+MySQL
+PostgreSQL
+Spring Boot
+Node.js
+Python FastAPI
+AWS ElastiCache
+
+
+
+
+
+Write-behind
+
+Concept
+Workflow 1️⃣ Application writes data → cache stores it immediately. 2️⃣ Cache queues the update for later persistence. 3️⃣ A background process flushes batched writes to the DB periodically or on trigger.
+Advantages
+Disadvantages
+Best Use Cases
+
+
+
+Refresh-ahead
+
+Concept
+Workflow 1️⃣ Application requests data → cache serves it. 2️⃣ Cache monitors TTL (time-to-live). 3️⃣ Before expiry, a background thread or scheduler fetches fresh data from the source. 4️⃣ Cache updates the entry, ensuring next access is instant.
+Advantages
+Disadvantages
+
+
+
+🎯 Key Insight
+Cache-aside → Lazy loading, simple, widely used.
+Write-through → Strong consistency, higher latency.
+Write-behind → High performance, eventual consistency.
+Refresh-ahead → Predictive, reduces misses, but may over-fetch.
+
+#example 
+
+
+
+caching strategy (Cache-aside) using Redis as the cache and a simulated database 👇
+
+import redis
+import time
+
+# Connect to Redis (local instance)
+cache = redis.StrictRedis(host='localhost', port=6379, db=0)
+
+# Simulated database (dictionary for demo)
+database = {
+    "user:1": {"name": "Hari", "role": "Engineer"},
+    "user:2": {"name": "Mohan", "role": "Designer"}
+}
+
+def get_from_db(key):
+    """Simulate database fetch with delay"""
+    print("Fetching from DB...")
+    time.sleep(1)  # simulate latency
+    return database.get(key)
+
+def get_user(key):
+    """Cache-aside pattern"""
+    # 1. Check cache
+    value = cache.get(key)
+    if value:
+        print("Cache hit!")
+        return value.decode("utf-8")
+
+    # 2. Cache miss → fetch from DB
+    print("Cache miss!")
+    value = get_from_db(key)
+    if value:
+        # 3. Update cache
+        cache.set(key, str(value), ex=30)  # TTL = 30s
+    return value
+
+# Demo
+print(get_user("user:1"))  # First call → DB + cache
+print(get_user("user:1"))  # Second call → Cache hit 
+
+
+🐍 Microservice Caching Example (FastAPI + Redis)
+
+
+from fastapi import FastAPI
+import redis
+import time
+
+app = FastAPI()
+
+# Redis connection
+cache = redis.StrictRedis(host="localhost", port=6379, db=0)
+
+# Simulated database (dictionary for demo)
+database = {
+    "product:1": {"name": "Laptop", "price": 1200},
+    "product:2": {"name": "Phone", "price": 800}
+}
+
+def get_from_db(key: str):
+    """Simulate DB fetch with latency"""
+    print("Fetching from DB...")
+    time.sleep(1)  # simulate DB delay
+    return database.get(key)
+
+@app.get("/product/{product_id}")
+def get_product(product_id: str):
+    key = f"product:{product_id}"
+
+    # 1. Check cache
+    value = cache.get(key)
+    if value:
+        print("Cache hit!")
+        return {"source": "cache", "data": eval(value.decode("utf-8"))}
+
+    # 2. Cache miss → fetch from DB
+    print("Cache miss!")
+    value = get_from_db(key)
+    if value:
+        # 3. Update cache with TTL
+        cache.set(key, str(value), ex=60)  # TTL = 60s
+    return {"source": "db", "data": value} 
+
+
+🐍 AI System Caching Example (LLM Inference)
+
+
+import redis
+import time
+
+# Simulated AI model inference
+def run_model(prompt: str):
+    print("Running expensive AI inference...")
+    time.sleep(2)  # simulate latency
+    return f"AI response for: {prompt}"
+
+# Redis connection
+cache = redis.StrictRedis(host="localhost", port=6379, db=0)
+
+def get_ai_response(prompt: str):
+    key = f"llm:{prompt}"
+
+    # 1. Check cache
+    value = cache.get(key)
+    if value:
+        print("Cache hit!")
+        return {"source": "cache", "response": value.decode("utf-8")}
+
+    # 2. Cache miss → run model
+    print("Cache miss!")
+    response = run_model(prompt)
+
+    # 3. Update cache with TTL
+    cache.set(key, response, ex=300)  # TTL = 5 minutes
+    return {"source": "model", "response": response}
+
+# Demo
+print(get_ai_response("Explain caching in AI systems"))
+print(get_ai_response("Explain caching in AI systems"))  # Instant cache hit 
+🐍 Machine Learning System Caching Example (Feature Cache)
+
+
+import redis
+import time
+from sklearn.feature_extraction.text import TfidfVectorizer
+
+# Connect to Redis
+cache = redis.StrictRedis(host="localhost", port=6379, db=0)
+
+# Simulated dataset
+documents = [
+    "Machine learning caching improves performance",
+    "Caching avoids recomputation in ML pipelines",
+    "Redis is often used for caching"
+]
+
+vectorizer = TfidfVectorizer()
+
+def compute_features(doc_id: int, text: str):
+    """Compute TF-IDF features with simulated delay"""
+    print("Computing features...")
+    time.sleep(2)  # simulate heavy computation
+    return vectorizer.fit_transform([text]).toarray().tolist()
+
+def get_features(doc_id: int, text: str):
+    key = f"features:{doc_id}"
+
+    # 1. Check cache
+    value = cache.get(key)
+    if value:
+        print("Cache hit!")
+        return {"source": "cache", "features": eval(value.decode("utf-8"))}
+
+    # 2. Cache miss → compute features
+    print("Cache miss!")
+    features = compute_features(doc_id, text)
+
+    # 3. Update cache with TTL
+    cache.set(key, str(features), ex=600)  # TTL = 10 minutes
+    return {"source": "compute", "features": features}
+
+# Demo
+print(get_features(1, documents[0]))  # First call → compute + cache
+print(get_features(1, documents[0]))  # Second call → instant cache hit 
+🐍 Vector Database Caching Example (Embeddings + FAISS)
+import redis
+from sentence_transformers import SentenceTransformer
+import faiss
+import numpy as np
+
+# Connect to Redis
+cache = redis.StrictRedis(host="localhost", port=6379, db=0)
+
+# Embedding model
+model = SentenceTransformer("all-MiniLM-L6-v2")
+
+# Initialize FAISS index (L2 distance)
+dimension = 384  # embedding size for MiniLM
+index = faiss.IndexFlatL2(dimension)
+
+# Add some sample vectors to FAISS
+texts = ["AI caching systems", "Vector database search", "Redis with embeddings"]
+embeddings = model.encode(texts)
+index.add(np.array(embeddings))
+
+def get_embedding(text: str):
+    key = f"embed:{text}"
+
+    # 1. Check cache
+    value = cache.get(key)
+    if value:
+        print("Cache hit!")
+        return np.array(eval(value.decode("utf-8")), dtype=np.float32)
+
+    # 2. Cache miss → compute embedding
+    print("Cache miss!")
+    embedding = model.encode([text])[0].tolist()
+
+    # 3. Update cache
+    cache.set(key, str(embedding), ex=3600)  # TTL = 1 hour
+    return np.array(embedding, dtype=np.float32)
+
+def search_vector_db(query: str, k: int = 2):
+    embedding = get_embedding(query)
+    distances, indices = index.search(np.array([embedding]), k)
+    return [(texts[i], float(distances[0][j])) for j, i in enumerate(indices[0])]
+
+# Demo
+print(search_vector_db("Redis caching for AI"))
+print(search_vector_db("Redis caching for AI"))  # Instant cache hit 
+🐍 Database Caching Example (Cache-aside)
+import redis
+import time
+
+# Connect to Redis
+cache = redis.StrictRedis(host="localhost", port=6379, db=0)
+
+# Simulated SQL database (dictionary for demo)
+database = {
+    "user:1": {"name": "Hari", "role": "Engineer"},
+    "user:2": {"name": "Mohan", "role": "Designer"}
+}
+
+def get_from_db(key: str):
+    """Simulate DB fetch with latency"""
+    print("Fetching from DB...")
+    time.sleep(2)  # simulate DB delay
+    return database.get(key)
+
+def get_user(key: str):
+    # 1. Check cache
+    value = cache.get(key)
+    if value:
+        print("Cache hit!")
+        return {"source": "cache", "data": eval(value.decode("utf-8"))}
+
+    # 2. Cache miss → fetch from DB
+    print("Cache miss!")
+    value = get_from_db(key)
+
+    # 3. Update cache with TTL
+    if value:
+        cache.set(key, str(value), ex=60)  # TTL = 60s
+    return {"source": "db", "data": value}
+
+# Demo
+print(get_user("user:1"))  # First call → DB + cache
+print(get_user("user:1"))  # Second call → Cache hit 
