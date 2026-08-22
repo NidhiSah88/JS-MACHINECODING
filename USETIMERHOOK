@@ -1,0 +1,176 @@
+58. How to build a custom timer hook in React.js? | useTimer | JavaScript Interview Question
+
+Problem Statement
+Create a custom React hook called useTimer that manages a countdown timer.
+The hook should expose the following API:
+
+const TOTAL_TIME = 5;
+
+const {
+  isRunning,
+  start,
+  stop,
+  seconds,
+} = useTimer(TOTAL_TIME);
+Using this hook, build a UI with two buttons:
+
+Start – Starts the countdown.
+Stop – Stops the countdown and resets it.
+When the timer is running, display the remaining seconds on the screen.
+
+When the timer is stopped manually or reaches 0, it should automatically reset back to the initial duration and display:
+
+No Timer Running
+Requirements
+Create a reusable custom hook named useTimer.
+
+The hook should accept the total countdown duration (in seconds) as an argument.
+
+Initially:
+
+seconds should equal the provided duration.
+isRunning should be false.
+Clicking Start should:
+
+Begin counting down every second.
+Update the remaining time on the screen.
+Clicking Stop should:
+
+Stop the countdown immediately.
+Reset the timer back to the original duration.
+Set isRunning to false.
+When the countdown reaches 0:
+
+Stop the timer automatically.
+Reset the timer back to the original duration.
+Display "No Timer Running".
+Clicking Start while the timer is already running should not create multiple intervals.
+
+Clean up timers appropriately to avoid memory leaks.
+
+Function Signature
+const {
+  isRunning,
+  start,
+  stop,
+  seconds,
+} = useTimer(totalTime);
+Arguments
+totalTime: The initial countdown duration in seconds.
+Returns
+isRunning: Indicates whether the timer is currently running.
+seconds: The remaining time in the countdown.
+start: Starts the timer.
+stop: Stops the timer and resets it to the initial duration.
+SOL:  
+
+
+
+
+import { useEffect, useRef, useState } from "react";
+
+function useTimer(totalTime) {
+  const [seconds, setSeconds] = useState(totalTime);
+  const [isRunning, setIsRunning] = useState(false);
+
+  const intervalRef = useRef(null);
+
+  const start = () => {
+    if (isRunning) return;
+
+    setIsRunning(true);
+  };
+
+  const stop = () => {
+    clearInterval(intervalRef.current);
+    intervalRef.current = null;
+
+    setIsRunning(false);
+    setSeconds(totalTime);
+  };
+
+  useEffect(() => {
+    if (!isRunning) return;
+
+    intervalRef.current = setInterval(() => {
+      setSeconds((prev) => {
+        if (prev <= 1) {
+          clearInterval(intervalRef.current);
+          intervalRef.current = null;
+          setIsRunning(false);
+
+          return totalTime;
+        }
+
+        return prev - 1;
+      });
+    }, 1000);
+
+    return () => {
+      clearInterval(intervalRef.current);
+    };
+  }, [isRunning, totalTime]);
+
+  return {
+    isRunning,
+    seconds,
+    start,
+    stop,
+  };
+}
+export default function App() {
+  const totalTime = 5;
+  const {
+    isRunning,
+    start,
+    stop,
+    seconds,
+  } = useTimer(totalTime);
+
+  return <main>
+    <div>
+      <h1>
+        {isRunning ? `${seconds}` : "No Timer Running"}
+      </h1>
+
+      <button onClick={start}>Start</button>  <br /> <br /> <br />
+      <button onClick={stop}>Stop</button>
+    </div>
+  </main>;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
