@@ -1,0 +1,30 @@
+Given an unsorted array of integers, write a function to find the length of the longest consecutive element sequence.
+The algorithm should run bigo of on bigo of n time. Okay, array number equal to 100, 4, 200, 1, 3, 2. Output should be four.
+
+SOL:
+def longest_consecutive(nums):
+    if not nums:
+        return 0
+        
+    # Put all numbers in a set for O(1) lookups
+    num_set = set(nums)
+    max_len = 0
+    
+    for n in num_set:
+        # Check if it's the START of a sequence (i.e., n - 1 doesn't exist)
+        if (n - 1) not in num_set:
+            current_num = n
+            current_len = 1
+            
+            # Count consecutive numbers moving forward
+            while (current_num + 1) in num_set:
+                current_num += 1
+                current_len += 1
+                
+            max_len = max(max_len, current_len)
+            
+    return max_len
+
+# Example usage:
+nums = [100, 4, 200, 1, 3, 2]
+print(longest_consecutive(nums))  # Output: 4 (sequence is 1, 2, 3, 4)
