@@ -1,0 +1,423 @@
+61. Build A Mini Clone Of Google Calendar View
+All Levels
+html logo
+react logo
+28,422
+Asked at these companies
+Sprinklr
+Flipkart
+@Yomesh Gupta
+
+
+
+
+In this question, we have to create the functionality of a day calendar. This is somewhat similar to what see in solutions like Google Calendar.
+
+Implement a Calendar, that shows the events for a single day.
+The events list is provided as an array of objects where each object has a title, start time, end time, and color code.
+The calendar should have 12 hours display. (AM - PM format)
+Handle the events clashes gracefully to display all the conflicting events.
+Display the Title and Timings on the event block
+As the challenge is UI-centric, prioritize the display of events and clash management.
+Assumptions:
+The events in the array can be in any random order.
+Event's end time will always be higher than the start time with a non zero duration.
+Mockups
+Non-conflicting meetings
+Non-conflicting meetings
+
+Conflicting Meetings
+Conflicting Meetings
+
+Interaction
+Interaction
+
+This is an interesting question that can have multiple levels.
+
+For SDE 1, show the UI for non-overlapping meetings. For SDE 2+, show the UI for over-lapping meetings too.
+
+
+sol:
+index.js
+const events = [
+  {
+    startTime: "00:00",
+    endTime: "01:30",
+    color: "#f6be23",
+    title: "#TeamDevtoolsTech",
+  },
+  {
+    startTime: "3:30",
+    endTime: "7:30",
+    color: "#f6501e",
+    title: "#TeamDevtoolsTech",
+  },
+  {
+    startTime: "4:30",
+    endTime: "8:30",
+    color: "#f6501e",
+    title: "#TeamDevtoolsTech",
+  },
+  {
+    startTime: "6:30",
+    endTime: "9:00",
+    color: "#f6501e",
+    title: "Demo",
+  },
+  {
+    startTime: "9:30",
+    endTime: "10:30",
+    color: "#029be5",
+    title: "#TeamDevtoolsTech",
+  },
+  {
+    startTime: "11:00",
+    endTime: "13:30",
+    color: "#029be5",
+    title: "#TeamDevtoolsTech",
+  },
+  {
+    startTime: "12:00",
+    endTime: "13:30",
+    color: "#029be5",
+    title: "#TeamDevtoolsTech",
+  },
+  {
+    startTime: "15:00",
+    endTime: "17:00",
+    color: "#029be5",
+    title: "#TeamDevtoolsTech",
+  },
+  {
+    startTime: "16:00",
+    endTime: "17:00",
+    color: "#029be5",
+    title: "#TeamDevtoolsTech",
+  },
+  {
+    startTime: "18:00",
+    endTime: "19:00",
+    color: "#f6501e",
+    title: "#TeamDevtoolsTech",
+  },
+  {
+    startTime: "20:30",
+    endTime: "22:30",
+    color: "#029be5",
+    title: "#TeamDevtoolsTech",
+  },
+  {
+    startTime: "20:30",
+    endTime: "22:30",
+    color: "#029be5",
+    title: "#TeamDevtoolsTech",
+  },
+];
+
+const main = document.querySelector("main");
+
+main.innerHTML = `
+  <div class="calendar">
+    <div class="calendar-header">
+      <h2>Day Calendar</h2>
+      <span>Today</span>
+    </div>
+
+    <div class="calendar-body">
+      <div class="time-column"></div>
+      <div class="events-column"></div>
+    </div>
+  </div>
+`;
+
+const timeColumn = document.querySelector(".time-column");
+const eventsColumn = document.querySelector(".events-column");
+
+const HOUR_HEIGHT = 60;
+const TOTAL_HOURS = 24;
+
+
+// Convert "HH:MM" into minutes
+function toMinutes(time) {
+  const [hours, minutes] = time.split(":").map(Number);
+
+  return hours * 60 + minutes;
+}
+
+
+// Convert "13:30" into "1:30 PM"
+function formatTime(time) {
+  const [hours, minutes] = time.split(":").map(Number);
+
+  const hour = hours % 12 || 12;
+  const period = hours < 12 ? "AM" : "PM";
+
+  return `${hour}:${String(minutes).padStart(2, "0")} ${period}`;
+}
+
+
+// Check whether two events overlap
+function overlaps(event1, event2) {
+  const start1 = toMinutes(event1.startTime);
+  const end1 = toMinutes(event1.endTime);
+
+  const start2 = toMinutes(event2.startTime);
+  const end2 = toMinutes(event2.endTime);
+
+  return start1 < end2 && start2 < end1;
+}
+
+
+// Create time labels
+for (let hour = 0; hour < TOTAL_HOURS; hour++) {
+  const label = document.createElement("div");
+
+  label.className = "time-label";
+
+  const displayHour = hour % 12 || 12;
+  const period = hour < 12 ? "AM" : "PM";
+
+  label.textContent = `${displayHour}:00 ${period}`;
+
+  timeColumn.appendChild(label);
+}
+
+
+// Create hour grid lines
+for (let hour = 0; hour <= TOTAL_HOURS; hour++) {
+  const line = document.createElement("div");
+
+  line.className = "hour-line";
+
+  line.style.top = `${hour * HOUR_HEIGHT}px`;
+
+  eventsColumn.appendChild(line);
+}
+
+
+// Sort events by start time
+const sortedEvents = [...events].sort(
+  (a, b) => toMinutes(a.startTime) - toMinutes(b.startTime)
+);
+
+
+// Assign each event to a column
+const columns = [];
+
+sortedEvents.forEach((event) => {
+  let column = 0;
+
+  while (true) {
+    if (!columns[column]) {
+      columns[column] = [];
+    }
+
+    const conflict = columns[column].some((existingEvent) =>
+      overlaps(event, existingEvent)
+    );
+
+    if (!conflict) {
+      columns[column].push(event);
+      event.column = column;
+      break;
+    }
+
+    column++;
+  }
+});
+
+
+// Find how many columns are required for each event
+sortedEvents.forEach((event) => {
+  const relatedEvents = sortedEvents.filter((other) =>
+    overlaps(event, other)
+  );
+
+  const maxColumn = Math.max(
+    event.column,
+    ...relatedEvents.map((item) => item.column)
+  );
+
+  event.totalColumns = maxColumn + 1;
+});
+
+
+// Render events
+sortedEvents.forEach((event) => {
+  const start = toMinutes(event.startTime);
+  const end = toMinutes(event.endTime);
+
+  const top = (start / 60) * HOUR_HEIGHT;
+  const height = ((end - start) / 60) * HOUR_HEIGHT;
+
+  const width = 100 / event.totalColumns;
+  const left = event.column * width;
+
+  const element = document.createElement("div");
+
+  element.className = "event";
+
+  element.style.top = `${top}px`;
+  element.style.height = `${height}px`;
+  element.style.width = `calc(${width}% - 4px)`;
+  element.style.left = `${left}%`;
+  element.style.backgroundColor = event.color;
+
+  element.innerHTML = `
+    <div class="event-title">${event.title}</div>
+    <div class="event-time">
+      ${formatTime(event.startTime)} - ${formatTime(event.endTime)}
+    </div>
+  `;
+
+  eventsColumn.appendChild(element);
+});
+
+
+style.css
+/* * {
+  box-sizing: border-box;
+}
+
+body {
+  font-family: sans-serif;
+  -webkit-font-smoothing: auto;
+  -moz-font-smoothing: auto;
+  -moz-osx-font-smoothing: grayscale;
+  font-smoothing: auto;
+  text-rendering: optimizeLegibility;
+  font-smooth: always;
+  -webkit-tap-highlight-color: transparent;
+  -webkit-touch-callout: none;
+} */
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: Arial, sans-serif;
+  background: #f8f9fa;
+}
+
+main {
+  padding: 30px;
+}
+
+.calendar {
+  width: 800px;
+  margin: auto;
+  background: white;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.header {
+  height: 70px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 25px;
+  border-bottom: 1px solid #ddd;
+}
+
+.header h2 {
+  margin: 0;
+}
+
+.date {
+  color: #666;
+}
+
+.calendar-body {
+  display: flex;
+  height: 1440px;
+}
+
+.time-column {
+  width: 100px;
+  border-right: 1px solid #ddd;
+  background: #fafafa;
+}
+
+.time-label {
+  height: 60px;
+  padding: 5px 10px;
+  text-align: right;
+  color: #777;
+  font-size: 12px;
+}
+
+.events-column {
+  position: relative;
+  flex: 1;
+}
+
+.hour-line {
+  position: absolute;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: #eee;
+}
+
+.event {
+  position: absolute;
+  padding: 8px;
+  border-left: 4px solid rgba(0, 0, 0, 0.25);
+  border-radius: 4px;
+  color: white;
+  overflow: hidden;
+  z-index: 2;
+  font-size: 13px;
+}
+
+.event strong {
+  display: block;
+  margin-bottom: 5px;
+}
+
+.event span {
+  display: block;
+  font-size: 11px;
+}
+
+index.html
+
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Devtools Tech Sandbox</title>
+    <meta charset="UTF-8" />
+    <!--if you want to import any external css then -->
+    <!-- use @import directive in the css file-->
+  </head>
+
+  <body>
+    <main>
+      Write your code here
+      
+
+
+    </main>
+
+    <!--do not remove-->
+    <script src="./index.js"></script>
+  </body>
+</html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
