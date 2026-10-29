@@ -1,0 +1,87 @@
+
+Problem Statement: Dynamic SQL Filter Generator & In-Memory EvaluatorImplement a Python function 
+named build_and_execute_query(records, filters) that dynamically builds a parameterized SQL WHERE 
+clause from a list of filter criteria, maps the parameters securely, and filters an in-memory list of records 
+to return all matching rows.   Input Format:records: A list of dictionary objects representing database rows
+(each having keys such as "id", "name", "segment", "menu_count").   filters: A list of filter dictionaries. 
+Each filter dictionary contains:'field': The database column name (e.g., 'segment' or 'menu_count').  
+'operator': The comparison operator, which can be 'EQUALS', 'GREATER_THAN', or 'LESS_THAN'.   'value': 
+The target value to compare against.   Your Task:Generate a Parameterized SQL WHERE clause string using sequential 
+indexed placeholders like : p0, : p1, etc. (ensuring parameter mapping security).   Return the matching parameters dictionary 
+corresponding to the placeholders.  
+Filter the in-memory list of records and return only the records that match ALL filter conditions.   
+
+
+
+
+
+SOL: 
+
+
+
+def build_and_execute_query(records, filters):
+    """
+    Generates a parameterized SQL WHERE clause, a parameters dict, and executes the filter.
+    
+    Args:
+        records (list of dict): List of establishments.
+        filters (list of dict): Filter criteria (field, operator, value).
+        
+    Returns:
+        dict: {
+            "sql_where": str,    # e.g., "segment = :p0 AND menu_count > :p1"
+            "params": dict,      # e.g., {"p0": "Fast Food", "p1": 50}
+            "matched_records": list # Records matching all filters
+        }
+    """
+    sql_parts = []
+    params = {}
+    
+    operator_map = {
+        "EQUALS": "=",
+        "GREATER_THAN": ">",
+        "LESS_THAN": "<"
+    }
+    
+    for i, f in enumerate(filters):
+        field = f["field"]
+        op = f["operator"]
+        val = f["value"]
+        
+        param_key = f"p{i}"
+        sql_op = operator_map[op]
+        
+        sql_parts.append(f"{field} {sql_op} :{param_key}")
+        params[param_key] = val
+        
+    sql_where = " AND ".join(sql_parts)
+    
+    matched_records = []
+    for record in records:
+        match = True
+        for f in filters:
+            field = f["field"]
+            op = f["operator"]
+            val = f["value"]
+            rec_val = record.get(field)
+            
+            if op == "EQUALS" and not (rec_val == val):
+                match = False
+            elif op == "GREATER_THAN" and not (rec_val > val):
+                match = False
+            elif op == "LESS_THAN" and not (rec_val < val):
+                match = False
+                
+        if match:
+            matched_records.append(record)
+
+    return {
+        "sql_where": sql_where,
+        "params": params,
+        "matched_records": matched_records
+    }
+```[cite: 2]
+
+
+
+
