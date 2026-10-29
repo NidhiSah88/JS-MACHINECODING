@@ -1,0 +1,45 @@
+find outer keyword of which inner keyword b!= 5
+in python
+
+dict1 = {"d": {"a":1, "b":2, "c":3},
+"e": {"a":4, "b":5, "c":6},
+"f": {"a":7, "b":8, "c":9}
+}
+
+res = [okey for okey, inkey in dict1.items() if inkey.get('b') != 5]
+
+print(res)
+```[cite: 6]
+
+
+FASTAPI- authentication, validation pist api
+
+from fastapi import FastAPI
+from pydantic import BaseModel, Field
+
+app = FastAPI()
+
+# Temporary storage to hold user info for the GET method
+fake_db = {}
+
+class UserSignup(BaseModel):
+    name: str = Field(..., max_length=20)
+    age: int = Field(..., le=100)
+
+@app.post("/signup")
+def signup_user(user: UserSignup):
+    # Data is automatically validated by Pydantic here
+    fake_db["user"] = user.model_dump()
+    return {"message": "User registered successfully", "data": user}
+
+@app.get("/user")
+def get_user():
+    return fake_db.get("user", {"message": "No user found"})
+
+
+
+
+If there is a customer table and order table, customer table has a customer ID 1 2 3 4 5 with different name, first name, last name, age, country, and order table, order item, item amount, ID, and customer ID, which is from customer table. So order order table consists five rows, customer table consists five rows, order order table has a first row for customer ID four, second row for customer ID four, third row for customer ID three, fourth row, customer ID one, fifth row, customer ID two. If we do inner join, what will be the count of the table like when we do inner join? 
+
+
+ans: 5
