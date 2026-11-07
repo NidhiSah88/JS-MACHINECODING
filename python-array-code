@@ -20,6 +20,23 @@ class Solution:
 
 
 
+class Solution:
+    def getMinMax(self, arr):
+        # Handle empty array edge case
+        if not arr:
+            return []
+            
+        min_val = arr[0]
+        max_val = arr[0]
+        
+        for i in arr:
+            if i > max_val:
+                max_val = i
+            elif i < min_val:
+                min_val = i
+                
+        # In Python, use .append() and pass a list or tuple
+        return [min_val, max_val]
 
 
 
