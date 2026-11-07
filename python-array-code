@@ -92,6 +92,103 @@ class Solution:
             
         
         
+Q4:
+Reverse Array in Groups
+Difficulty: BasicAccuracy: 37.48%Submissions: 393K+Points: 1Average Time: 15m
+Given an integer array arr[] and an integer k, reverse every consecutive group of k elements. If fewer than k elements remain at the end, reverse all of them.
+
+Examples:
+
+Input: arr[] = [1, 2, 3, 4, 5], k = 3
+Output: [3, 2, 1, 5, 4]
+Explanation: First group consists of elements 1, 2, 3. Second group consists of 4, 5.
+Input: arr[] = [5, 6, 8, 9], k = 5
+Output: [9, 8, 6, 5]
+Explnation: Since k is greater than the number of remaining elements, the entire array is reversed.
+Constraints:
+
+1 ≤ arr.size(), arr[i], k ≤ 105
+
+ANS: 
+
+
+class Solution:
+
+    def reverseInGroups(self, arr, k):
+        """code here"""
+
+        n = len(arr)
+
+        # Identify each group
+        for i in range(0, n, k):
+
+            # Find starting and ending positions
+            left = i
+            right = min(i + k - 1, n - 1)
+
+            # Reverse current group
+            while left < right:
+
+                arr[left], arr[right] = arr[right], arr[left]
+
+                left += 1
+                right -= 1
+
+        return arr
+
+
+M2:
+def reverseInGroups(arr, k):
+
+    for i in range(0, len(arr), k):
+        arr[i:i+k] = arr[i:i+k][::-1]
+
+    return arr
+Here:
+- arr[i:i+k] selects a group.
+- [::-1] reverses that group.
+- Assignment replaces the original group.
+Time: O(n)
+
+Space: O(k) because slicing creates temporary lists.
+
+
+
+IN JS :
+function reverseInGroups(arr, k) {
+
+    for (let i = 0; i < arr.length; i += k) {
+
+        let end = Math.min(i + k, arr.length);
+
+        let group = arr.slice(i, end).reverse();
+
+        arr.splice(i, group.length, ...group);
+    }
+
+    return arr;
+}
+
+
+Here:
+- slice() extracts the group.
+- reverse() reverses it.
+- splice() replaces the original elements.
+Time: O(n) for this implementation overall, with O(k) auxiliary space.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
